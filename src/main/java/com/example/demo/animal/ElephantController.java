@@ -98,8 +98,7 @@ public class ElephantController {
    */
   @PutMapping("/elephants/{id}")
   public Elephant updateElephant(@PathVariable Long id, @RequestBody Elephant elephant) {
-    elephantService.updateElephant(id, elephant);
-    return elephantService.getElephantById(id);
+    return elephantService.updateElephant(id, elephant);
   }
 
   /**
