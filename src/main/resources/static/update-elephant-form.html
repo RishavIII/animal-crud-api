@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Elephant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container py-4">
+  <header class="mb-4">
+    <h1>Animal Website</h1>
+  </header>
+
+  <nav class="mb-4">
+    <a href="index.html" class="me-3">Home</a>
+    <a href="about.html" class="me-3">About</a>
+    <a href="new-elephant-form.html" class="me-3">Add</a>
+  </nav>
+
+  <main>
+    <h2>Edit Elephant</h2>
+
+    <form id="update-elephant-form" class="mt-4">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input id="name" class="form-control" type="text" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <input id="description" class="form-control" type="text" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select id="gender" class="form-select" required>
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input id="age" class="form-control" type="number" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Update</button>
+      <a href="index.html" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    async function loadElephant() {
+      try {
+        const response = await fetch(`/elephants/${id}`);
+        if (!response.ok) throw new Error("Elephant not found");
+        const elephant = await response.json();
+
+        document.getElementById("name").value = elephant.name || "";
+        document.getElementById("description").value = elephant.description || "";
+        document.getElementById("gender").value = elephant.gender || "";
+        document.getElementById("age").value = elephant.age ?? "";
+      } catch (error) {
+        console.error("Error loading elephant:", error);
+        alert("Could not load elephant data.");
+      }
+    }
+
+    document.getElementById("update-elephant-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const updatedElephant = {
+        name: document.getElementById("name").value,
+        description: document.getElementById("description").value,
+        gender: document.getElementById("gender").value,
+        age: parseInt(document.getElementById("age").value)
+      };
+
+      try {
+        const response = await fetch(`/elephants/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedElephant)
+        });
+
+        if (response.ok) {
+          alert("Elephant updated successfully!");
+          window.location.href = `details.html?id=${id}`;
+        } else {
+          alert("Failed to update elephant.");
+        }
+      } catch (error) {
+        console.error("Error updating elephant:", error);
+        alert("Error updating elephant.");
+      }
+    });
+
+    loadElephant();
+  </script>
+</body>
+</html>

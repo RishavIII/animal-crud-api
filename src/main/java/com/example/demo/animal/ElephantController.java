@@ -134,5 +134,4 @@ public class ElephantController {
     return elephantService.readJson();
 
   }
-
 }
